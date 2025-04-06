@@ -1,0 +1,112 @@
+
+. "":
+. "":
+. "equipment???":
+. "states":
+. "faction":
+. countries:
+    1.     "fuel_status": {
+            "fuel": 297204.06509,
+            "max_fuel": 371500.0,
+            "fuel_gain": 2.0,
+            "fuel_cost": 0.0,
+            "fuel_gain_per_oil": 2.2,
+            "fuel_gain_from_states": 0.0,
+            "fuel_gain_from_lend_lease": 0.0,
+            "fuel_consumption_from_lend_lease": 0.0,
+    }
+    2.     "capital": 64,
+        "original_capital": 64,
+    3.   "political_power": 2.324
+    4.     "stability": 0.75,
+        "war_support": 0.3,
+    4.5.   "nukes": [
+    5.    "convoys": {
+            "equipment": {
+                "equipment": {
+                    "id": {
+                        "id": 1,
+                        "type": 70
+                    },
+                    "amount": 200.0
+                },
+                "allow_zero_entries": false
+            }
+    6.    "manpower": {
+            "ratio": 81900
+        },
+    7.    "num_ships": 38,
+    8.
+        "focus_tree": "german_focus",
+        "continuous_focus_palette": "generic_focus",
+        "focus": {
+            "progress": 1.0
+        },
+    9.  "logistics": ???
+    10!!!    "country_reports": {
+            "index": 0,
+            "days": 0,
+            "date": "1.1.1.1",
+            "construction": {
+                "civilian_factory": 0,
+                "military_factory": 0,
+                "dockyard": 0,
+                "port": 0,
+                "infrastructure": 0,
+                "air_base": 0,
+                "rocket_site": 0,
+                "gun_emplacement": 0,
+                "radar": 0,
+                "anti_air": 0,
+                "refinery": 0,
+                "fuel_silo": 0,
+                "supply_node": 0,
+                "nuclear_reactor": 0,
+                "land_fort": 0,
+                "naval_fort": 0,
+                "other": 0
+            },
+            "equipment_production": {
+                "convoy": 0.0,
+                "train": 0.0,
+                "floating_harbor": 0.0,
+                "railway_gun": 0.0,
+                "armor": 0.0,
+                "land_cruiser": 0.0,
+                "motorized": 3.0,
+                "mechanized": 0.0,
+                "infantry": 54.0,
+                "capital_ship": 0.0,
+                "submarine": 0.0,
+                "screen_ship": 0.0,
+                "fighter": 0.0,
+                "heavy_fighter": 0.0,
+                "interceptor": 0.0,
+                "tactical_bomber": 0.0,
+                "strategic_bomber": 0.0,
+                "cas": 0.0,
+                "naval_bomber": 0.0,
+                "missile": 0.0,
+                "emplacement_gun_ammo": 0.0,
+                "ballistic_missile": 0.0,
+                "nuclear_missile": 0.0,
+                "sam_missile": 0.0,
+                "suicide": 0.0,
+                "scout_plane": 0.0,
+                "maritime_patrol_plane": 0.0,
+                "air_transport": 0.0,
+                "carrier": 0.0,
+                "missile_launcher": 0.0,
+                "support": 1.0,
+                "amphibious": 0.0,
+                "anti_air": 0.0,
+                "artillery": 1.0,
+                "anti_tank": 0.0,
+                "rocket": 0.0,
+                "flame": 0.0
+            },
+            "log": [
+                0
+            ]
+        },
+11. "military_lines": {  

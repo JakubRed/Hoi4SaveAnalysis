@@ -1,0 +1,8 @@
+1. sklonować repo - git clone https://github.com/rakaly/hoi4save.git
+2. Pobrać rust - https://rustup.rs/
+3. Pobrać visual studio i tam zaznaczyć: 
+	- Kompilator MSVC (np. „MSVC v143” lub „MSVC v142” C++ x64/x86 build tools)
+	- Windows SDK (np. Windows 10 SDK lub Windows 11 SDK)
+4. W terminalu w folderze głównym: cargo build --release
+5. Generowanie jsona: C:\Users\jakub\Documents\GitHub\Hoi4\hoi4save\target\release\json.exe C:\ścieżka\do\SAVE.hoi4 > wynik.json
+6. Voilà
