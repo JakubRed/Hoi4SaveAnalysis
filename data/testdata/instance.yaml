@@ -1,0 +1,14 @@
+# === Game instance configuration file ===
+
+# Gdzie mają być kopiowane przetworzone pliki autosave (np. z timestampem)
+processed_folder: data/testdata
+
+# Baza danych do zapisu (ścieżka względna względem głównego katalogu)
+db_path: data/testdata
+db_name: Main.db
+
+# (Opcjonalnie) jakie kraje analizować
+country_filter:
+  - GER
+  - ENG
+  - FRA
