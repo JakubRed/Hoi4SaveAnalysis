@@ -110,3 +110,7 @@
             ]
         },
 11. "military_lines": {  
+
+
+Kiedyś:     "variables": {
+    "num_ships": 38
