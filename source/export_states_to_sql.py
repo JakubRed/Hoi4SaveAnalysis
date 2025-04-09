@@ -1,6 +1,5 @@
 import os
 import sys
-import sqlite3
 import json
 import pandas as pd
 from utils.db_utils import validate_dataset_id_sequence
@@ -15,10 +14,7 @@ def format_levels(levels):
         return total_sum, count_multiplied
     return 0, 0
 
-def export_states_to_sql(db_path, json_path, dataset_id=None):
-    # Connect to database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+def export_states_to_sql(cursor, json_path, dataset_id=None):
 
     # Check if table exists
     cursor.execute(f"""
@@ -34,12 +30,12 @@ def export_states_to_sql(db_path, json_path, dataset_id=None):
         states_data = data.get('states', {})
 
     # Determine dataset_id if not given
-    if dataset_id is None:
-        cursor.execute(f"SELECT MAX(dataset_id) FROM {table_name}")
-        result = cursor.fetchone()
-        dataset_id = (result[0] or 0) + 1
-    else:
-        validate_dataset_id_sequence(cursor, dataset_id)
+    # if dataset_id is None:
+    #     cursor.execute(f"SELECT MAX(dataset_id) FROM {table_name}")
+    #     result = cursor.fetchone()
+    #     dataset_id = (result[0] or 0) + 1
+    # else:
+    #     validate_dataset_id_sequence(cursor, dataset_id)
     print(f"{function_log_tag} Using dataset_id: {dataset_id}") #to be removed
 
     for state_id, state_info in states_data.items():
@@ -93,10 +89,7 @@ def export_states_to_sql(db_path, json_path, dataset_id=None):
             formatted['synthetic_refinery_sum'], formatted['synthetic_refinery_count']
         ))
 
-    conn.commit()
-
-    conn.execute("VACUUM;") #to be removed
-    conn.close()
+    cursor.connection.commit()
     print(f"{function_log_tag} {table_name} successfully exported.")
 
 # Allow direct execution

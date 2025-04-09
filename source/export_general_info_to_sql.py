@@ -7,10 +7,10 @@ from datetime import datetime
 function_log_tag = "[export_general_info_to_sql]"
 table_name = "General_info"
 
-def export_general_info_to_sql(db_path, json_path, dataset_id=None):
+def export_general_info_to_sql(cursor, json_path, dataset_id=None):
     # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    # conn = sqlite3.connect(db_path)
+    # cursor = conn.cursor()
     
     # Check if table exists
     cursor.execute(f"""
@@ -25,14 +25,15 @@ def export_general_info_to_sql(db_path, json_path, dataset_id=None):
         data = json.load(f)
 
     # Determine dataset_id if not given
-    if dataset_id is None:
-        cursor.execute(f"SELECT MAX(dataset_id) FROM {table_name}")
-        result = cursor.fetchone()
-        dataset_id = (result[0] or 0) + 1
-    else:
-        validate_dataset_id_sequence(cursor, dataset_id)
+    # if dataset_id is None:
+    #     cursor.execute(f"SELECT MAX(dataset_id) FROM {table_name}")
+    #     result = cursor.fetchone()
+    #     dataset_id = (result[0] or 0) + 1
+    # else:
+    #     validate_dataset_id_sequence(cursor, dataset_id)
     print(f"{function_log_tag} Using dataset_id: {dataset_id}")
         
+    gameplaysettings = data.get("gameplaysettings", {})
     # Extract fields
     extracted = {
         "dataset_id": dataset_id,
@@ -45,19 +46,23 @@ def export_general_info_to_sql(db_path, json_path, dataset_id=None):
         "version": data.get("version"),
         "multiplayer_random_count": data.get("multiplayer_random_count"),
         "multiplayer_random_seed": data.get("multiplayer_random_seed"),
-        "debug_current_ref_id": data.get("debug_current_ref_id")
+        "debug_current_ref_id": data.get("debug_current_ref_id"),
+        "difficulty": gameplaysettings.get("difficulty"),
+        "ironman": gameplaysettings.get("ironman"),
+        "historical": gameplaysettings.get("historical")
     }
 
     # Insert data into db
     cursor.execute(f'''
         INSERT INTO {table_name} (
             dataset_id, timestamp, date, save_version, game_unique_seed, game_unique_id,
-            session, version, multiplayer_random_count, multiplayer_random_seed, debug_current_ref_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            session, version, multiplayer_random_count, multiplayer_random_seed, debug_current_ref_id,
+            ironman, historical, difficulty
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', tuple(extracted.values()))
 
-    conn.commit()
-    conn.close()
+    # conn.commit()
+    # conn.close()
     print(f"{function_log_tag} General info successfully exported.")
 
 # Allow direct execution

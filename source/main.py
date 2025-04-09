@@ -1,11 +1,18 @@
 import os
 import time
 import shutil
+import sqlite3
 import yaml
 from datetime import datetime
 from export_states_to_sql import export_states_to_sql
 from export_general_info_to_sql import export_general_info_to_sql
 from export_countries_to_sql import export_countries_to_sql
+from export_dataset_date_to_sql import export_dataset_date
+from export_fuel_to_sql import export_fuel_to_sql
+from export_construction_to_sql import export_construction_to_sql
+from utils.db_utils import clear_all_tables
+from utils.db_utils import load_country_tracking_flags
+from export_eq_production_to_sql import export_equipment_production_to_sql
 
 # Load main config file
 main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -38,10 +45,32 @@ print("Processing autosave file once...")
 
 # Process the save file 
 
-dataset_id = 2
+# dataset_id = 2
 # export_states_to_sql(db_path, parsed_save_file, dataset_id)
 # export_general_info_to_sql(db_path, parsed_save_file, dataset_id)
 
-export_states_to_sql(db_path, parsed_save_file)
-export_general_info_to_sql(db_path, parsed_save_file)
-export_countries_to_sql(db_path, parsed_save_file)
+# Connect to database
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+tracked_countries = load_country_tracking_flags(cursor)
+# clear_all_tables(cursor)
+# export_general_info_to_sql(cursor, parsed_save_file, 1)
+conn.commit()
+
+cursor.execute(f"SELECT MAX(dataset_id) FROM Dataset_date")
+dataset_id = cursor.fetchone()
+dataset_id = (dataset_id[0] or 0)
+
+for _ in range(1):
+    dataset_id = dataset_id + 1
+    print(f"dataset id: {dataset_id}")
+    export_construction_to_sql(cursor, parsed_save_file, dataset_id)
+    export_countries_to_sql(cursor, parsed_save_file, dataset_id)
+    export_dataset_date(cursor, parsed_save_file, dataset_id)
+    export_equipment_production_to_sql(cursor, parsed_save_file, dataset_id)
+    export_fuel_to_sql(cursor, parsed_save_file, dataset_id)
+    export_states_to_sql(cursor, parsed_save_file, dataset_id)
+    print()
+    
+conn.execute("VACUUM;")
+conn.close()

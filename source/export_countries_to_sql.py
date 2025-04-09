@@ -7,11 +7,11 @@ from utils.db_utils import validate_dataset_id_sequence
 table_name = "Country"
 function_log_tag = "[export_countries_to_sql]"
 
-def export_countries_to_sql(db_path, json_path, dataset_id=None):
+def export_countries_to_sql(cursor, json_path, dataset_id=None):
     function_log_tag = "[export_countries_to_sql]"
     # Connect to database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    # conn = sqlite3.connect(db_path)
+    # cursor = conn.cursor()
 
     # Check if table exists
     cursor.execute(f"""
@@ -25,14 +25,6 @@ def export_countries_to_sql(db_path, json_path, dataset_id=None):
     with open(json_path, 'r', encoding='utf-16') as f:
         data = json.load(f)
         countries_data = data.get('countries', {})
-
-    # Determine dataset_id if not given
-    if dataset_id is None:
-        cursor.execute(f"SELECT MAX(dataset_id) FROM {table_name}")
-        result = cursor.fetchone()
-        dataset_id = (result[0] or 0) + 1
-    else:
-        validate_dataset_id_sequence(cursor, dataset_id)
 
     print(f"{function_log_tag} Using dataset_id: {dataset_id}")
 
@@ -54,9 +46,10 @@ def export_countries_to_sql(db_path, json_path, dataset_id=None):
             political_power, stability, war_support, manpower_ratio
         ))
 
-    conn.commit()
-    conn.execute("VACUUM;")
-    conn.close()
+    # conn.commit()
+    # conn.execute("VACUUM;")
+    # conn.close()
+    cursor.connection.commit()
     print(f"{function_log_tag} Countries successfully exported.")
 
 if __name__ == "__main__":
