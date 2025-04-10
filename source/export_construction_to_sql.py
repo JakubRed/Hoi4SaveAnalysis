@@ -17,7 +17,6 @@ def export_construction_to_sql(cursor, json_path, tracked_flags, dataset_id=None
     # Load the JSON file
     with open(json_path, 'r', encoding='utf-16') as f:
         data = json.load(f)
-
     countries_data = data.get("countries", {})
 
     for country_tag, country in countries_data.items():
@@ -48,7 +47,7 @@ def export_construction_to_sql(cursor, json_path, tracked_flags, dataset_id=None
         other = construction.get("other")
 
         cursor.execute(f'''
-            INSERT OR REPLACE INTO {table_name} (
+            INSERT INTO {table_name} (
                 country_tag, dataset_id,
                 civilian_factory, military_factory, dockyard, port, infrastructure,
                 air_base, rocket_site, gun_emplacement, radar, anti_air, refinery,

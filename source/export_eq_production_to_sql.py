@@ -38,7 +38,7 @@ def export_equipment_production_to_sql(cursor, json_path, tracked_flags, dataset
             continue
 
         cursor.execute(f'''
-            INSERT OR REPLACE INTO {table_name} (
+            INSERT INTO {table_name} (
                 country_tag, dataset_id,
                 convoy, train, floating_harbor, railway_gun, armor, land_cruiser, motorized,
                 mechanized, infantry, capital_ship, submarine, screen_ship, fighter,
