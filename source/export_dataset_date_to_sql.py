@@ -25,7 +25,7 @@ def export_dataset_date(cursor, json_path, dataset_id=None):
     # else:
     #     validate_dataset_id_sequence(cursor, dataset_id)
 
-    print(f"{function_log_tag} Using dataset_id: {dataset_id}")
+    # print(f"{function_log_tag} Using dataset_id: {dataset_id}")
 
     date_string = data.get("date", None)
     if not date_string:

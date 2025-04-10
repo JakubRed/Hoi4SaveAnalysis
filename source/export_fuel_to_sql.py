@@ -4,7 +4,7 @@ from utils.db_utils import safe_round
 function_log_tag = "[export_fuel_to_sql]"
 table_name = "Fuel"
 
-def export_fuel_to_sql(cursor, json_path, dataset_id=None):
+def export_fuel_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     # Check if table exists
     cursor.execute(f"""
         SELECT name FROM sqlite_master
@@ -25,11 +25,13 @@ def export_fuel_to_sql(cursor, json_path, dataset_id=None):
     # else:
     #     validate_dataset_id_sequence(cursor, dataset_id)
 
-    print(f"{function_log_tag} Using dataset_id: {dataset_id}")
+    # print(f"{function_log_tag} Using dataset_id: {dataset_id}")
 
     countries_data = data.get("countries", {})
 
-    for tag, country in countries_data.items():
+    for country_tag, country in countries_data.items():
+        if tracked_flags and tracked_flags.get(country_tag) != 1:
+            continue
         fuel_info = country.get("fuel_status", {})
         if not fuel_info:
             continue  # skip countries with no fuel info
@@ -41,7 +43,7 @@ def export_fuel_to_sql(cursor, json_path, dataset_id=None):
                 fuel_gain_from_lend_lease, fuel_consumption_from_lend_lease
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            tag, dataset_id,
+            country_tag, dataset_id,
             safe_round(fuel_info.get("fuel")),
             safe_round(fuel_info.get("max_fuel")),
             safe_round(fuel_info.get("fuel_gain")),

@@ -14,7 +14,7 @@ def format_levels(levels):
         return total_sum, count_multiplied
     return 0, 0
 
-def export_states_to_sql(cursor, json_path, dataset_id=None):
+def export_states_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
 
     # Check if table exists
     cursor.execute(f"""
@@ -36,10 +36,12 @@ def export_states_to_sql(cursor, json_path, dataset_id=None):
     #     dataset_id = (result[0] or 0) + 1
     # else:
     #     validate_dataset_id_sequence(cursor, dataset_id)
-    print(f"{function_log_tag} Using dataset_id: {dataset_id}") #to be removed
+    # print(f"{function_log_tag} Using dataset_id: {dataset_id}") #to be removed
 
     for state_id, state_info in states_data.items():
         owner = state_info.get('owner', '')
+        if tracked_flags and tracked_flags.get(owner) != 1:
+            continue
         manpower_available = state_info.get('manpower_pool', {}).get('available')
         manpower_locked = state_info.get('manpower_pool', {}).get('locked')
         manpower_total = state_info.get('manpower_pool', {}).get('total')
@@ -60,7 +62,11 @@ def export_states_to_sql(cursor, json_path, dataset_id=None):
             ('radar_station', 'radar_station'),
             ('synthetic_refinery', 'synthetic_refinery')
         ]:
-            s, c = format_levels(buildings.get(json_key, {}).get('level', []))
+            building_entry = buildings.get(json_key, {})
+            if isinstance(building_entry, dict):
+                s, c = format_levels(building_entry.get('level', []))
+            else:
+                s, c = 0, 0
             formatted[f'{key}_sum'] = s
             formatted[f'{key}_count'] = c
 

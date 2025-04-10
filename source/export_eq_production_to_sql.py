@@ -4,7 +4,7 @@ import json
 function_log_tag = "[export_equipment_production_to_sql]"
 table_name = "Equipment_production"
 
-def export_equipment_production_to_sql(cursor, json_path, dataset_id=None):
+def export_equipment_production_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     # Check if table exists
     cursor.execute(f"""
         SELECT name FROM sqlite_master
@@ -24,11 +24,13 @@ def export_equipment_production_to_sql(cursor, json_path, dataset_id=None):
     # else:
     #     validate_dataset_id_sequence(cursor, dataset_id)
 
-    print(f"{function_log_tag} Using dataset_id: {dataset_id}")
+    # print(f"{function_log_tag} Using dataset_id: {dataset_id}")
 
     countries_data = data.get("countries", {})
 
-    for tag, country in countries_data.items():
+    for country_tag, country in countries_data.items():
+        if tracked_flags and tracked_flags.get(country_tag) != 1:
+            continue
         reports = country.get("country_reports", {})
         equipment = reports.get("equipment_production", {})
         if not equipment:
@@ -49,7 +51,7 @@ def export_equipment_production_to_sql(cursor, json_path, dataset_id=None):
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         ''', (
-            tag, dataset_id,
+            country_tag, dataset_id,
             equipment.get("convoy"), equipment.get("train"), equipment.get("floating_harbor"),
             equipment.get("railway_gun"), equipment.get("armor"), equipment.get("land_cruiser"),
             equipment.get("motorized"), equipment.get("mechanized"), equipment.get("infantry"),

@@ -1,3 +1,6 @@
+import subprocess
+import os
+
 def validate_dataset_id_sequence(cursor, dataset_id):
     if dataset_id != 0:
         cursor.execute("SELECT MAX(dataset_id) FROM General_info")
@@ -37,3 +40,32 @@ def load_country_tracking_flags(cursor):
 
     print(f"{function_log_tag} Loaded tracking flags for {len(country_flags)} countries.")
     return country_flags
+
+def convert_save_to_json(hoi4save_path, save_path, output_path):
+    """
+    Converts a Hearts of Iron IV .hoi4 save file to JSON using the hoi4save tool.
+
+    Parameters:
+    - hoi4save_path: str — path to the compiled hoi4save CLI tool
+    - save_path: str — path to the input .hoi4 save file
+    - output_path: str — path to where the output JSON should be written
+    """
+    function_log_tag = "[convert_save_to_json]"
+    if not os.path.exists(hoi4save_path):
+        raise FileNotFoundError(f"{function_log_tag} hoi4save tool not found at: {hoi4save_path}")
+
+    if not os.path.exists(save_path):
+        raise FileNotFoundError(f"{function_log_tag} Save file not found: {save_path}")
+
+    print(f"{function_log_tag} Converting {save_path} to {output_path}...")
+
+    try:
+        with open(output_path, 'w', encoding='utf-8') as outfile:
+            subprocess.run([
+                hoi4save_path,
+                save_path
+            ], check=True, stdout=outfile)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"{function_log_tag} Failed to convert save file: {e}")
+
+    print(f"{function_log_tag} Conversion completed successfully → {output_path}")
