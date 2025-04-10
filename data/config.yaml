@@ -1,7 +1,7 @@
 # === Main configuration file ===
 
 # Path to the folder with incoming autosave files
-input_folder: C:\Users\jakub\Documents\Paradox Interactive\Hearts of Iron IV\save games
+input_folder: C:/Users/jakub/Documents/Paradox Interactive/Hearts of Iron IV/save games/
 
 
 # Expected name of the autosave file
@@ -9,10 +9,10 @@ autosave_file: autosave.hoi4
 parsed_save_file: raw.json
 
 # Location of third party parsing tool
-saveParser: tools\hoi4save\target\release\json.exe
+hoi4save_parser_path: tools/hoi4save/target/release/json.exe
 
 # Folder to store processed/copy of autosave snapshots
-processed_folder: \savebackup
+processed_folder: /savebackup
 
 # Enable or disable autosave file monitoring
 watch_for_changes: true

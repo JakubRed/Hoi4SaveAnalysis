@@ -6,6 +6,7 @@ processed_folder: data/testdata
 # Baza danych do zapisu (ścieżka względna względem głównego katalogu)
 db_path: data/testdata
 db_name: Main.db
+output_file: raw.json
 
 # (Opcjonalnie) jakie kraje analizować
 country_filter:
