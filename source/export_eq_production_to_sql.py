@@ -1,9 +1,10 @@
 import json
-# from utils.db_utils import validate_dataset_id_sequence
+from utils.db_utils import timeit
 
 function_log_tag = "[export_equipment_production_to_sql]"
 table_name = "Equipment_production"
 
+@timeit
 def export_equipment_production_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     # Check if table exists
     cursor.execute(f"""
@@ -66,5 +67,5 @@ def export_equipment_production_to_sql(cursor, json_path, tracked_flags, dataset
             equipment.get("artillery"), equipment.get("anti_tank"), equipment.get("rocket"), equipment.get("flame")
         ))
 
-    cursor.connection.commit()
-    print(f"{function_log_tag} Equipment production data successfully exported.")
+    # cursor.connection.commit()
+    # print(f"{function_log_tag} Equipment production data successfully exported.")

@@ -1,9 +1,11 @@
 import json
 from utils.db_utils import safe_round
+from utils.db_utils import timeit
 
 function_log_tag = "[export_fuel_to_sql]"
 table_name = "Fuel"
 
+@timeit
 def export_fuel_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     # Check if table exists
     cursor.execute(f"""
@@ -54,5 +56,5 @@ def export_fuel_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
             safe_round(fuel_info.get("fuel_consumption_from_lend_lease"))
         ))
 
-    cursor.connection.commit()
-    print(f"{function_log_tag} Fuel data successfully exported.")
+    # cursor.connection.commit()
+    # print(f"{function_log_tag} Fuel data successfully exported.")

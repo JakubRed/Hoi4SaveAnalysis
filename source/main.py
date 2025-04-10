@@ -13,6 +13,7 @@ from export_construction_to_sql import export_construction_to_sql
 from export_eq_production_to_sql import export_equipment_production_to_sql
 import utils.db_utils as db_utils
 
+from time import perf_counter
 
 # Load main config file
 main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -57,7 +58,7 @@ for key in tracked_countries:
     tracked_countries[key] = 0
 tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1}
 
-# db_utils.clear_all_tables(cursor)
+db_utils.clear_all_tables(cursor)
 # export_general_info_to_sql(cursor, parsed_save_file, 1)
 conn.commit()
 
@@ -65,7 +66,11 @@ cursor.execute(f"SELECT MAX(dataset_id) FROM Dataset_date")
 dataset_id = cursor.fetchone()
 dataset_id = (dataset_id[0] or 0)
 
-for _ in range(144):
+start = perf_counter()
+
+for i in range(1):
+    
+    loop_start = perf_counter()
     dataset_id = dataset_id + 1
     print(f"dataset id: {dataset_id}")
     export_general_info_to_sql(cursor, parsed_save_file, dataset_id)
@@ -75,8 +80,14 @@ for _ in range(144):
     export_equipment_production_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
     export_fuel_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
     export_states_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
+    loop_end = perf_counter()
+    print(f"[LOOP] Export nr {i:<31} [LOOP]  - {loop_end - loop_start:.4f} s")
+        
     conn.commit()
     # print()
+    
+end = perf_counter()
+print(f"[DATASET] Export {i:<31} [DATASET]-{end - start:.4f} s")
     
 conn.execute("VACUUM;")
 conn.close()

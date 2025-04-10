@@ -2,11 +2,12 @@ import os
 import sys
 import sqlite3
 import json
-from utils.db_utils import validate_dataset_id_sequence
+from utils.db_utils import timeit
 from datetime import datetime
 function_log_tag = "[export_general_info_to_sql]"
 table_name = "General_info"
 
+@timeit
 def export_general_info_to_sql(cursor, json_path, dataset_id=None):
 
     cursor.execute(f"""
@@ -48,4 +49,4 @@ def export_general_info_to_sql(cursor, json_path, dataset_id=None):
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', tuple(extracted.values()))
 
-    print(f"{function_log_tag} General info successfully exported.")
+    # print(f"{function_log_tag} General info successfully exported.")

@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import pandas as pd
-from utils.db_utils import validate_dataset_id_sequence
+from utils.db_utils import timeit
 from datetime import datetime
 function_log_tag = "[export_states_to_sql]"
 table_name = "States"
@@ -14,6 +14,7 @@ def format_levels(levels):
         return total_sum, count_multiplied
     return 0, 0
 
+@timeit
 def export_states_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
 
     # Check if table exists
@@ -95,8 +96,8 @@ def export_states_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
             formatted['synthetic_refinery_sum'], formatted['synthetic_refinery_count']
         ))
 
-    cursor.connection.commit()
-    print(f"{function_log_tag} {table_name} successfully exported.")
+    # cursor.connection.commit()
+    # print(f"{function_log_tag} {table_name} successfully exported.")
 
 # Allow direct execution
 if __name__ == "__main__":

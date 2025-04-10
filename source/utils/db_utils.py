@@ -1,5 +1,6 @@
-import subprocess
-import os
+import subprocess # convert_save_to_json
+import os # convert_save_to_json
+from time import perf_counter #tiemit
 
 def validate_dataset_id_sequence(cursor, dataset_id):
     if dataset_id != 0:
@@ -69,3 +70,14 @@ def convert_save_to_json(hoi4save_path, save_path, output_path):
         raise RuntimeError(f"{function_log_tag} Failed to convert save file: {e}")
 
     print(f"{function_log_tag} Conversion completed successfully → {output_path}")
+
+def timeit(func):
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        result = func(*args, **kwargs)
+        end = perf_counter()
+        # print(f"[FUNC]\t{func.__name__}\ttook\t\t\t\t\t{end - start:.4f}\tseconds")
+        print(f"[Timer] {func.__name__:40} [Timer] - {end - start:.4f} s")
+
+        return result
+    return wrapper

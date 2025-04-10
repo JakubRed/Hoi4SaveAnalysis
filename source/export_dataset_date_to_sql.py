@@ -1,9 +1,10 @@
 import json
-from utils.db_utils import validate_dataset_id_sequence
+from utils.db_utils import timeit
 
 function_log_tag = "[export_dataset_date]"
 table_name = "Dataset_date"
 
+@timeit
 def export_dataset_date(cursor, json_path, dataset_id=None):
     # Check if table exists
     cursor.execute(f"""
@@ -42,5 +43,5 @@ def export_dataset_date(cursor, json_path, dataset_id=None):
         ) VALUES (?, ?, ?, ?, ?)
     ''', (dataset_id, year, month, day, hour))
 
-    cursor.connection.commit()
-    print(f"{function_log_tag} {table_name} successfully exported.")
+    # cursor.connection.commit()
+    # print(f"{function_log_tag} {table_name} successfully exported.")

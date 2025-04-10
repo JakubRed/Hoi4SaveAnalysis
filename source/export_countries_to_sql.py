@@ -2,10 +2,12 @@ import os
 import sys
 import sqlite3
 import json
+from utils.db_utils import timeit
 
 table_name = "Country"
 function_log_tag = "[export_countries_to_sql]"
 
+@timeit
 def export_countries_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     function_log_tag = "[export_countries_to_sql]"
 
