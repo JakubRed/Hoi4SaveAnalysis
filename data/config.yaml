@@ -8,6 +8,9 @@ input_folder: C:\Users\jakub\Documents\Paradox Interactive\Hearts of Iron IV\sav
 autosave_file: autosave.hoi4
 parsed_save_file: raw.json
 
+# Location of third party parsing tool
+saveParser: tools\hoi4save\target\release\json.exe
+
 # Folder to store processed/copy of autosave snapshots
 processed_folder: \savebackup
 
