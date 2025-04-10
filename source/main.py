@@ -41,10 +41,16 @@ watch_enabled = config.get("watch_for_changes", True)
 parsed_save_file = os.path.join(main_dir, instance["processed_folder"], config["parsed_save_file"])
 db_path = os.path.join(main_dir, instance["db_path"], instance["db_name"])
 last_modified = None
+hoi4save_parser_path = config.get("hoi4save_parser_path")
+save_path = config.get("input_folder")
+save_path = os.path.join(config["input_folder"], config["autosave_file"])
+print(f"save Path: {save_path}")
+output_path = os.path.join(instance["processed_folder"], instance.get("output_file"))
 
 print("Processing autosave file once...")
 
 # Process the save file 
+db_utils.convert_save_to_json(hoi4save_parser_path, save_path, output_path)
 
 # dataset_id = 2
 # export_states_to_sql(db_path, parsed_save_file, dataset_id)
@@ -54,9 +60,9 @@ print("Processing autosave file once...")
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 tracked_countries = db_utils.load_country_tracking_flags(cursor)
-for key in tracked_countries:
-    tracked_countries[key] = 0
-tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1}
+# for key in tracked_countries:
+#     tracked_countries[key] = 0
+# tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1}
 
 db_utils.clear_all_tables(cursor)
 # export_general_info_to_sql(cursor, parsed_save_file, 1)
@@ -71,6 +77,7 @@ start = perf_counter()
 for i in range(1):
     
     loop_start = perf_counter()
+    
     dataset_id = dataset_id + 1
     print(f"dataset id: {dataset_id}")
     export_general_info_to_sql(cursor, parsed_save_file, dataset_id)
@@ -80,14 +87,15 @@ for i in range(1):
     export_equipment_production_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
     export_fuel_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
     export_states_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
+    
     loop_end = perf_counter()
-    print(f"[LOOP] Export nr {i:<31} [LOOP]  - {loop_end - loop_start:.4f} s")
+    print(f"[LOOP] Export nr {i+1:<31} [LOOP]  - {loop_end - loop_start:.4f} s")
         
     conn.commit()
     # print()
     
 end = perf_counter()
-print(f"[DATASET] Export {i:<31} [DATASET]-{end - start:.4f} s")
+print(f"[DATASET] Export {+1:<31} [DATASET]-{end - start:.4f} s")
     
 conn.execute("VACUUM;")
 conn.close()

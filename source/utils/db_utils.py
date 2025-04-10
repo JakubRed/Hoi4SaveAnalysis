@@ -61,15 +61,17 @@ def convert_save_to_json(hoi4save_path, save_path, output_path):
     print(f"{function_log_tag} Converting {save_path} to {output_path}...")
 
     try:
-        with open(output_path, 'w', encoding='utf-8') as outfile:
-            subprocess.run([
-                hoi4save_path,
-                save_path
-            ], check=True, stdout=outfile)
-    except subprocess.CalledProcessError as e:
+        process = subprocess.run([hoi4save_path, save_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if process.returncode != 0:
+            raise RuntimeError(f"{function_log_tag} Conversion failed with exit code {process.returncode}")
+
+        with open(output_path, "w", encoding="utf-16") as outfile:
+            outfile.write(process.stdout.decode())
+    except Exception as e:
         raise RuntimeError(f"{function_log_tag} Failed to convert save file: {e}")
 
     print(f"{function_log_tag} Conversion completed successfully → {output_path}")
+
 
 def timeit(func):
     def wrapper(*args, **kwargs):
