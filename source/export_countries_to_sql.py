@@ -22,7 +22,7 @@ def export_countries_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
     # Load the JSON file
     with open(json_path, 'r', encoding='utf-16') as f:
         data = json.load(f)
-        countries_data = data.get('countries', {})
+    countries_data = data.get('countries', {})
 
     # print(f"{function_log_tag} Using dataset_id: {dataset_id}")
 
@@ -31,17 +31,18 @@ def export_countries_to_sql(cursor, json_path, tracked_flags, dataset_id=None):
             continue
         capital = country_info.get("capital")
         original_capital = country_info.get("original_capital")
-        political_power = country_info.get("political_power")
+        politics = country_info.get("politics")
+        political_power = politics.get("political_power")
         stability = country_info.get("stability")
         war_support = country_info.get("war_support")
-        manpower_ratio = country_info.get("manpower_ratio")
+        # manpower_ratio = country_info.get("manpower_ratio") # where did i get it from?
 
         cursor.execute(f'''
             INSERT INTO {table_name} (
                 dataset_id, country_tag, capital, original_capital,
-                political_power, stability, war_support, manpower_ratio
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                political_power, stability, war_support
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (
             dataset_id, country_tag, capital, original_capital,
-            political_power, stability, war_support, manpower_ratio
+            political_power, stability, war_support,
         ))

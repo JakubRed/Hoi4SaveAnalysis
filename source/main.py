@@ -50,7 +50,7 @@ output_path = os.path.join(instance["processed_folder"], instance.get("output_fi
 print("Processing autosave file once...")
 
 # Process the save file 
-db_utils.convert_save_to_json(hoi4save_parser_path, save_path, output_path)
+# db_utils.convert_save_to_json(hoi4save_parser_path, save_path, output_path)
 
 # dataset_id = 2
 # export_states_to_sql(db_path, parsed_save_file, dataset_id)
@@ -64,7 +64,7 @@ for key in tracked_countries:
     tracked_countries[key] = 0
 tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1} # 8 countries
 
-db_utils.clear_all_tables(cursor)
+# db_utils.clear_all_tables(cursor)
 # export_general_info_to_sql(cursor, parsed_save_file, 1)
 conn.commit()
 
@@ -74,7 +74,7 @@ dataset_id = (dataset_id[0] or 0)
 
 start = perf_counter()
 
-for i in range(3):
+for i in range(1):
     
     loop_start = perf_counter()
     
