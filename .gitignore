@@ -1,0 +1,25 @@
+GERMANY/
+"Za\305\202o\305\274enia projetkoew.odt"
+a1.json
+a2.json
+a3.json
+a4.json
+autosave 1 mar/
+autosave.hoi4
+backup/
+data/fullGame1/
+data/fullGame2/
+data/nexttest1/
+data/testdata/parsed_save.json
+source/__pycache__/data_exctraction.cpython-313.pyc
+source/__pycache__/main.cpython-313.pyc
+wynik.json
+
+source/__pycache__/
+source/utils/__pycache__/
+
+source/__pycache__/export_construction_to_sql.cpython-313.pyc
+source/__pycache__/export_countries_to_sql.cpython-313.pyc
+source/__pycache__/export_eq_production_to_sql.cpython-313.pyc
+source/__pycache__/export_fuel_to_sql.cpython-313.pyc
+source/utils/__pycache__/db_utils.cpython-313.pyc
