@@ -36,3 +36,7 @@ data/fullGame1/
 data/fullGame2/
 !data/fullGame2/instance.yaml
 !data/fullGame2/Main.db
+
+data/majors8/
+!data/majors8/instance.yaml
+!data/majors8/Main.db

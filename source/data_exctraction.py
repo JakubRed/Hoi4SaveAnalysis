@@ -57,9 +57,9 @@ def run_data_extraction(json_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     tracked_countries = db_utils.load_country_tracking_flags(cursor)
-    # for key in tracked_countries:
-    #     tracked_countries[key] = 0
-    # tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL": 1}
+    for key in tracked_countries:
+        tracked_countries[key] = 0
+    tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL": 1}
 
     # db_utils.clear_all_tables(cursor)
     conn.commit()
