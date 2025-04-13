@@ -6,8 +6,9 @@ processed_folder: data/fourSaves
 # Baza danych do zapisu (ścieżka względna względem głównego katalogu)
 db_path: data/fourSaves
 db_name: Main.db
-output_file: a1.json
-parsed_save_file: a1.json
+output_file: last.json
+parsed_save_file: a4.json
+
 
 # (Opcjonalnie) jakie kraje analizować
 country_filter:

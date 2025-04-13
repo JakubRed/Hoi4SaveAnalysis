@@ -64,7 +64,7 @@ for key in tracked_countries:
     tracked_countries[key] = 0
 tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1} # 8 countries
 
-# db_utils.clear_all_tables(cursor)
+db_utils.clear_all_tables(cursor)
 # export_general_info_to_sql(cursor, parsed_save_file, 1)
 conn.commit()
 

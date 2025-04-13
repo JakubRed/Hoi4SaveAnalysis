@@ -114,3 +114,11 @@
 
 Kiedyś:     "variables": {
     "num_ships": 38
+
+    "ideas": [
+    "sour_loser",
+    "partial_economic_mobilisation",
+    "limited_exports",
+    "limited_conscription"
+
+"research_slot": 4,
