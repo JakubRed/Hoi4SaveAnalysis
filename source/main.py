@@ -1,101 +1,75 @@
-import os
 import time
 import shutil
-import sqlite3
-import yaml
+import os
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 from datetime import datetime
-from export_states_to_sql import export_states_to_sql
-from export_general_info_to_sql import export_general_info_to_sql
-from export_countries_to_sql import export_countries_to_sql
-from export_dataset_date_to_sql import export_dataset_date
-from export_fuel_to_sql import export_fuel_to_sql
-from export_construction_to_sql import export_construction_to_sql
-from export_eq_production_to_sql import export_equipment_production_to_sql
-import utils.db_utils as db_utils
+from utils.db_utils import convert_save_to_json
+from data_exctraction import run_data_extraction
 
-from time import perf_counter
+import sys
+import yaml
 
-# Load main config file
 main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_path = os.path.join(main_dir, 'data', 'config.yaml')
 with open(config_path, "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
-
-# Load instance-specific config from argument
-import sys
-if len(sys.argv) < 2:
-    print("Usage: python main.py <instance_config.yaml>")
-    sys.exit(1)
-
-instance_config_path = sys.argv[1]
-with open(instance_config_path, "r", encoding="utf-8") as f:
+with open(sys.argv[1], "r", encoding="utf-8") as f:
     instance = yaml.safe_load(f)
 
-# Merge configs (instance values override general ones)
-config.update(instance)
-
-autosave_name = config["autosave_file"]
-input_folder = config["input_folder"]
-poll_interval = config.get("poll_interval", 5)
-watch_enabled = config.get("watch_for_changes", True)
-parsed_save_file = os.path.join(main_dir, instance["processed_folder"], config["parsed_save_file"])
-db_path = os.path.join(main_dir, instance["db_path"], instance["db_name"])
-last_modified = None
+save_filename = instance.get("autosave_file", "autosave.hoi4")
+# input_folder = os.path.expanduser(instance["input_folder"])
+input_folder = config.get("input_folder")
+backup_path = instance["backup_path"]
 hoi4save_parser_path = config.get("hoi4save_parser_path")
-save_path = config.get("input_folder")
-save_path = os.path.join(config["input_folder"], config["autosave_file"])
-print(f"save Path: {save_path}")
-output_path = os.path.join(instance["processed_folder"], instance.get("output_file"))
+output_path = os.path.join(instance["processed_folder"], instance["output_file"])
 
-print("Processing autosave file once...")
+class SaveChangeHandler(FileSystemEventHandler):
+    def on_modified(self, event):
+        if event.is_directory:
+            return
 
-# Process the save file 
-# db_utils.convert_save_to_json(hoi4save_parser_path, save_path, output_path)
+        if os.path.basename(event.src_path).lower() == save_filename.lower():
+            # Wait until the file stops changing (with timeout)
+            last_size = -1
+            unchanged_counter = 0
+            timeout = 60  # maximum 60 seconds waiting time
+            start_time = time.time()
+            while True:
+                current_size = os.path.getsize(event.src_path)
+                if current_size == last_size:
+                    unchanged_counter += 1
+                    if unchanged_counter >= 2:
+                        break
+                else:
+                    unchanged_counter = 0
+                if time.time() - start_time > timeout:
+                    print(f"[watcher] Timeout while waiting for {save_filename} to stabilize.")
+                    return
+                last_size = current_size
+                time.sleep(1)
+            print(f"[watcher] Detected change in {save_filename}")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_name = f"autosave_{timestamp}.hoi4"
+            backup_file_path  = os.path.join(backup_path, backup_name)
 
-# dataset_id = 2
-# export_states_to_sql(db_path, parsed_save_file, dataset_id)
-# export_general_info_to_sql(db_path, parsed_save_file, dataset_id)
+            os.makedirs(backup_file_path , exist_ok=True)
+            shutil.copy2(event.src_path, backup_file_path)
+            print(f"[watcher] Backup created at {backup_file_path}")
 
-# Connect to database
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
-tracked_countries = db_utils.load_country_tracking_flags(cursor)
-for key in tracked_countries:
-    tracked_countries[key] = 0
-tracked_countries = {"GER": 1, "ENG": 1, "USA": 1, "FRA": 1, "SOV": 1, "ITA": 1, "JAP": 1, "POL" : 1} # 8 countries
+            convert_save_to_json(hoi4save_parser_path, event.src_path, output_path)
+            run_data_extraction(output_path)
 
-db_utils.clear_all_tables(cursor)
-# export_general_info_to_sql(cursor, parsed_save_file, 1)
-conn.commit()
+if __name__ == "__main__":
+    print(f"[watcher] Monitoring: {input_folder}")
+    observer = Observer()
+    event_handler = SaveChangeHandler()
+    observer.schedule(event_handler, path=input_folder, recursive=False)
+    observer.start()
 
-cursor.execute(f"SELECT MAX(dataset_id) FROM Dataset_date")
-dataset_id = cursor.fetchone()
-dataset_id = (dataset_id[0] or 0)
-
-start = perf_counter()
-
-for i in range(1):
-    
-    loop_start = perf_counter()
-    
-    dataset_id = dataset_id + 1
-    print(f"dataset id: {dataset_id}")
-    export_general_info_to_sql(cursor, parsed_save_file, dataset_id)
-    export_construction_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
-    export_countries_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
-    export_dataset_date(cursor, parsed_save_file, dataset_id)
-    export_equipment_production_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
-    export_fuel_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
-    export_states_to_sql(cursor, parsed_save_file, tracked_countries, dataset_id)
-    
-    loop_end = perf_counter()
-    print(f"[LOOP] Export nr {i+1:<31} [LOOP]  - {loop_end - loop_start:.4f} s")
-        
-    conn.commit()
-    # print()
-    
-end = perf_counter()
-print(f"[DATASET] Export {+1:<31} [DATASET]-{end - start:.4f} s")
-    
-conn.execute("VACUUM;")
-conn.close()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
