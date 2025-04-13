@@ -7,8 +7,6 @@ a4.json
 autosave 1 mar/
 autosave.hoi4
 backup/
-data/fullGame1/
-data/fullGame2/
 data/nexttest1/
 data/testdata/parsed_save.json
 source/__pycache__/data_exctraction.cpython-313.pyc
@@ -23,3 +21,15 @@ source/__pycache__/export_countries_to_sql.cpython-313.pyc
 source/__pycache__/export_eq_production_to_sql.cpython-313.pyc
 source/__pycache__/export_fuel_to_sql.cpython-313.pyc
 source/utils/__pycache__/db_utils.cpython-313.pyc
+
+data/fourSaves/*
+!data/fourSaves/instance.yaml
+!data/fourSaves/full_MAIN.db
+
+data/fullGame1/
+!data/fullGame1/instance.yaml
+!data/fullGame1/Main.db
+
+data/fullGame2/
+!data/fullGame2/instance.yaml
+!data/fullGame2/Main.db
