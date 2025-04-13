@@ -12,6 +12,9 @@ data/testdata/parsed_save.json
 source/__pycache__/data_exctraction.cpython-313.pyc
 source/__pycache__/main.cpython-313.pyc
 wynik.json
+kategorie.txt
+Plan Dzialania.odt
+clearTheDb.sql
 
 source/__pycache__/
 source/utils/__pycache__/
