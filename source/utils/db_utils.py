@@ -72,7 +72,6 @@ def convert_save_to_json(hoi4save_path, save_path, output_path):
 
     print(f"{function_log_tag} Conversion completed successfully → {output_path}")
 
-
 def timeit(func):
     def wrapper(*args, **kwargs):
         start = perf_counter()
