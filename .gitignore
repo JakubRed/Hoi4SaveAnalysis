@@ -40,3 +40,5 @@ data/fullGame2/
 data/majors8/
 !data/majors8/instance.yaml
 !data/majors8/Main.db
+
+source/visualization/config.yaml
